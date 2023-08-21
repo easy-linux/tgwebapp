@@ -8,11 +8,11 @@ import { initEnemies, addEnemies } from "./sprites/enemy";
 import { initBombs } from "./sprites/bombs";
 import { initExplosions } from "./sprites/explosions";
 import { initInfo } from "./sprites/infoPanel";
-import { EventHub } from "./common/eventHub";
+import { addScore, EventHub, resetScore, saveScore } from "./common/eventHub";
 import { play } from "./common/sound";
 import { getGameOver, getLevelMessage, getYouWin } from "./sprites/messages";
 import { checkCollisions } from "./common/collisions";
-import { getLevelNumber, isLastLevel, nextLevel, resetLevel } from "./common/levels";
+import { getLevel, getLevelNumber, isLastLevel, nextLevel, resetLevel } from "./common/levels";
 import { addBackground, setBackgroundForLevel } from "./sprites/background";
 
 const WIDTH = appConstants.size.WIDTH;
@@ -128,6 +128,7 @@ const restartGame = () => {
 
 EventHub.on(appConstants.events.youWin, () => {
   app.ticker.stop();
+  addScore(getLevelNumber() * 100)
   if (isLastLevel()) {
     rootContainer.addChild(getYouWin());
     setTimeout(() => play(appConstants.sounds.youWin), 1000);
@@ -135,6 +136,7 @@ EventHub.on(appConstants.events.youWin, () => {
     nextLevel();
     rootContainer.addChild(getLevelMessage(getLevelNumber() + 1));
   }
+  saveScore()
 });
 
 EventHub.on(appConstants.events.gameOver, () => {
@@ -147,11 +149,13 @@ EventHub.on(appConstants.events.restartGame, (event) => {
   if (event === appConstants.events.gameOver) {
     rootContainer.removeChild(getGameOver());
     resetLevel();
+    resetScore();
     rootContainer.addChild(getLevelMessage(getLevelNumber() + 1));
   }
   if (event === appConstants.events.youWin) {
     rootContainer.removeChild(getYouWin());
     resetLevel();
+    resetScore();
     restartGame();
   }
   if (event === appConstants.events.levelMessage) {

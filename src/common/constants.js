@@ -32,7 +32,10 @@ const appConstants = {
         restartGame: 'restartGame',
         resetPeople: 'resetPeople',
         tick: 'tick',
-        collision: 'collision'
+        collision: 'collision',
+        addScore: 'addScore',
+        resetScore: 'resetScore',
+        saveScore: 'saveScore',
     },
     sounds: {
         shot: 'shot',

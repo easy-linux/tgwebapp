@@ -29,3 +29,13 @@ export const restartGame = (data) => {
 export const resetPeople = (data) => {
     EventHub.emit(appConstants.events.resetPeople, data)
 }
+export const addScore = (value) => {
+    EventHub.emit(appConstants.events.addScore, {value})
+}
+export const resetScore = () => {
+    EventHub.emit(appConstants.events.resetScore)
+}
+
+export const saveScore = () => {
+    EventHub.emit(appConstants.events.saveScore)
+}

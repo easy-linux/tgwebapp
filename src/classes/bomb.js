@@ -7,6 +7,7 @@ import { getCoordX } from "../common/utils";
 import { addExplosion } from "../sprites/explosions";
 import { getPlayer } from "../sprites/player";
 import { BaseSprite } from "./baseSprite";
+import { addScore } from "../common/eventHub";
 
 export class Bomb extends BaseSprite {
   constructor({ container, x, y, target }) {
@@ -67,6 +68,7 @@ export class Bomb extends BaseSprite {
       if (a.sprite.spriteType === appConstants.spriteType.player || b.sprite.spriteType === appConstants.spriteType.player) {
         const player = getPlayer();
         if (!player.locked) {
+          addScore(1)
           player.lockPlayer();
           this.destroyMe();
         }
@@ -75,6 +77,7 @@ export class Bomb extends BaseSprite {
         this.destroyMe();
       } else if (a.sprite.spriteType === appConstants.spriteType.bullet || b.sprite.spriteType === appConstants.spriteType.bullet) {
         // collision with bullet
+        addScore(1)
         this.destroyMe();
       }
     }

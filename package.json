@@ -19,6 +19,7 @@
     "@fastify/express": "^2.3.0",
     "@fastify/static": "^6.10.2",
     "detect-collisions": "^7.0.5",
+    "dotenv": "^16.3.1",
     "fastify": "^4.18.0",
     "howler": "^2.2.3",
     "pixi.js": "^7.0.5",

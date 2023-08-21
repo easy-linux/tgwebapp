@@ -1,10 +1,11 @@
 import { Container, Graphics, Sprite, Text, TextStyle } from "pixi.js";
 import { getTexture } from "../common/assets";
 import appConstants from "../common/constants";
-import { EventHub, gameOver, youWin } from "../common/eventHub";
+import { EventHub, gameOver, youWin, addScore } from "../common/eventHub";
 import { getLevel } from "../common/levels";
 import { muteEffects, pause, play, unMuteEffects } from "../common/sound";
 import { allTextureKeys } from "../common/textures";
+import { saveGameScore } from '../common/api'
 
 let info;
 let app;
@@ -14,6 +15,7 @@ let manText;
 
 let ufoCount = 0;
 let manCount = 0;
+let score = 0
 
 let musicOff;
 let musicOffStatus = true;
@@ -22,6 +24,8 @@ let effectsOff;
 let effectsOffStatus = true;
 
 let ufoMaxCount = 10
+
+let scoreText = 'Score: 0'
 
 const style = new TextStyle({
   fontFamily: "Arial",
@@ -96,8 +100,16 @@ export const initInfo = (currApp, root) => {
   manText.name = "manText";
   infoPanel.addChild(manText);
 
-  ///
+  /// init score panel
+  const scoreContainer = new Container();
+  scoreContainer.position.x = appConstants.size.WIDTH / 2;
+  scoreContainer.position.y = 70;
+  scoreText = new Text("Score: 0", style);
+  scoreText.anchor.set(0.5);
+  scoreText.name = "scorePanel";
+  scoreContainer.addChild(scoreText);
 
+  info.addChild(scoreContainer);
   info.addChild(infoPanel);
   info.alpha = 0.6;
 
@@ -186,6 +198,9 @@ EventHub.on(appConstants.events.manKilled, (event) => {
 })
 
 EventHub.on(appConstants.events.ufoDestroyed, (event) => {
+
+  addScore(10)
+
     ufoCount += 1
     ufoText.text = `${ufoCount}`
     if(ufoCount === ufoMaxCount){
@@ -194,10 +209,27 @@ EventHub.on(appConstants.events.ufoDestroyed, (event) => {
 })
 
 EventHub.on(appConstants.events.resetPeople, (event) => {
+    addScore(manCount*10)
+
     manCount = event.count
     manText.text = `${manCount}`
     ufoCount = 0
     ufoText.text = `${ufoCount}`
     const level = getLevel()
     ufoMaxCount = level.enemyCount * 10
+})
+
+EventHub.on(appConstants.events.resetScore, (event) => {
+  score = 0
+  scoreText.text = 'Score: 0'
+})
+
+EventHub.on(appConstants.events.addScore, (event) => {
+  score += event.value
+  console.log(score)
+  scoreText.text = `Score: ${score}`
+})
+
+EventHub.on(appConstants.events.saveScore, (event) => {
+  saveGameScore(score)
 })
